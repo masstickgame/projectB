@@ -381,7 +381,7 @@ router.post('/add_course_grade', async function (req, res, next) {
                         unit_subject: req.body[i].unit_university,
                         group: req.body[i].group,
                         unit_university: req.body[i].unit_university,
-                        grade: req.body[i].groupuniversity[j].id_course,
+                        grade: req.body[i].groupuniversity[j].grade,
                         id_user: req.body[i].id_user
                     });
                 } else {
