@@ -20,7 +20,7 @@ router.get('/', function (req, res, next) {
     res.render('index', { title: 'Express' });
 
 });
-outer.get('/Checkdata', async function (req, res, next) {
+router.get('/Checkdata', async function (req, res, next) {
     try {
         res.json("data");
     } catch (error) {
