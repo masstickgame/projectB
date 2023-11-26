@@ -539,20 +539,47 @@ router.get('/get_userall_teacher', async function (req, res, next) {
     }
 });
 //---- 
+// router.post('/add_teacher', async function (req, res, next) {
+//     try {
+//         for (let i = 0; i < req.body.length; i++) {
+//             const { intdextea } = req.body[i];
+//             console.log(req.body[i].intdextea)
+//             for (let j = 0; j < req.body[i].groupuniversity.length; j++) {
+//                 let data = await knex.knex('course_grade').where({ id_course: req.body[i].groupuniversity[j].id_course }).update({
+//                     intdextea: req.body[i].intdextea
+//                 });
+//             }
+//         }
+//         res.json("Data saved successfully");
+//     } catch (error) {
+//         res.json(error);
+//     }
+// });
 router.post('/add_teacher', async function (req, res, next) {
     try {
         for (let i = 0; i < req.body.length; i++) {
-            const { intdextea } = req.body[i];
-            console.log(req.body[i].intdextea)
-            for (let j = 0; j < req.body[i].groupuniversity.length; j++) {
-                let data = await knex.knex('course_grade').where({ id_course: req.body[i].groupuniversity[j].id_course }).update({
-                    intdextea: req.body[i].intdextea
-                });
+            const { intdextea, groupuniversity } = req.body[i];
+
+            // ตรวจสอบว่า intdextea ไม่ว่าง
+            if (!intdextea) {
+                return res.status(400).json({ error: 'Invalid intdextea data' });
+            }
+
+            for (let j = 0; j < groupuniversity.length; j++) {
+                const id_course = groupuniversity[j].id_course;
+
+                // ใช้ .update() เพื่ออัปเดตข้อมูลเฉพาะ id_course ที่ต้องการ
+                await knex('indextea')
+                    .where({ id_course })
+                    .update({
+                        teachers: knex.raw(`jsonb_set(??, '{${i}}', ?)`, ['teachers', JSON.stringify({ id: i + 1, label: `อาจารย์ท่านที่ ${i + 1}`, selectedOption: intdextea })])
+                    });
             }
         }
         res.json("Data saved successfully");
     } catch (error) {
-        res.json(error);
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 //---
