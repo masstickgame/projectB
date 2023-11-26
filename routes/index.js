@@ -569,8 +569,8 @@ router.post('/add_teacher', async function (req, res, next) {
                 const id_course = groupuniversity[j].id_course;
 
                 // ใช้ .update() เพื่ออัปเดตข้อมูลเฉพาะ id_course ที่ต้องการ
-                await knex('indextea')
-                    .where({ id_course })
+                await knex('course_grade')
+                    .where({ id_course: req.body[i].groupuniversity[j].id_course })
                     .update({
                         teachers: knex.raw(`jsonb_set(??, '{${i}}', ?)`, ['teachers', JSON.stringify({ id: i + 1, label: `อาจารย์ท่านที่ ${i + 1}`, selectedOption: intdextea })])
                     });
