@@ -542,12 +542,13 @@ router.get('/get_userall_teacher', async function (req, res, next) {
 router.post('/add_teacher', async function (req, res, next) {
     try {
         for (let i = 0; i < req.body.length; i++) {
-            const { teacher1, teacher2, teacher3 } = req.body[i];
-            console.log(req.body[i].teacher1)
+            const { intdextea } = req.body[i];
+            console.log(req.body[i].intdextea)
             for (let j = 0; j < req.body[i].groupuniversity.length; j++) {
                 {
                     let data = await knex.knex('course_grade').where({ id_course: req.body[i].groupuniversity[j].id_course }).update({
-                        teacher1:req.body[i].teacher1,teacher2: req.body[i].teacher2,teacher3: req.body[i].teacher3
+                        // teacher1:req.body[i].teacher1,teacher2: req.body[i].teacher2,teacher3: req.body[i].teacher3
+                        intdextea:req.body[i]
                     });
                 }
 
