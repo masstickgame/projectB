@@ -548,10 +548,9 @@ router.post('/add_teacher', async function (req, res, next) {
                 {
                     let data = await knex.knex('course_grade').where({ id_course: req.body[i].groupuniversity[j].id_course }).update({
                         // teacher1:req.body[i].teacher1,teacher2: req.body[i].teacher2,teacher3: req.body[i].teacher3
-                        intdextea:req.body[i]
+                        intdextea:req.body[i].teacher
                     });
                 }
-
             }
         }
         res.json("Data saved successfully");
