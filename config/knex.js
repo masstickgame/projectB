@@ -5,7 +5,7 @@ var knex = require('knex')({
         port : 18619,
         user: 'admin',
         password: '123456789',
-        database: 'transfer_courses1'
+        database: 'postgres'
     }
 });
 
