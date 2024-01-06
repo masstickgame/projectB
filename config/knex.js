@@ -1,7 +1,7 @@
 var knex = require('knex')({
     client: 'pg',
     connection: {
-        host: '163.123.183.93',
+        host: '13.228.225.19',
         port : 16790,
         user: 'admin',
         password: '123456789',
