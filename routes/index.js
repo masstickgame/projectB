@@ -215,6 +215,9 @@ router.post('/add_university', async function (req, res, next) {
 router.post('/update_university', async function (req, res, next) {
     try {
         let data = await knex.knex('university').where({ id_subject: req.body.id_subject }).update({
+            id_subject: req.body.id_subject,
+            group: req.body.group,
+            unit: req.body.unit,
             sub_name: req.body.sub_name,
             explanation: req.body.explanation,
             university_year: req.body.university_year,
