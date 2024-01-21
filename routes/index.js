@@ -249,6 +249,7 @@ router.post('/add_school', async function (req, res, next) {
         let data = await knex.knex('school').insert({
             names: req.body.names,
             year_school: req.body.year_school,
+            type_school: req.body.type_school,
         });
         res.json(data);
     } catch (error) {
@@ -260,6 +261,7 @@ router.post('/update_school', async function (req, res, next) {
         let data = await knex.knex('school').where({ id_school: req.body.id_school }).update({
             names: req.body.names,
             year_school: req.body.year_school,
+            type_school: req.body.type_school,
         });
         res.json(data);
     } catch (error) {
