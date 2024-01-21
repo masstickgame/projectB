@@ -71,28 +71,34 @@ router.post('/get_userid', async function (req, res, next) {
 });
 router.post('/add_user', async function (req, res, next) {
     try {
-        let password = await hashPassword(req.body.password)
-        let data = await knex.knex('user').insert({
-            user_name: req.body.user_name,
-            password: password,
-            user_type: req.body.user_type,
-            user_firstname: req.body.user_firstname,
-            user_lastname: req.body.user_lastname,
-            user_year: parseInt(req.body.user_year || 0),
-            user_unit: parseInt(req.body.user_unit || 0),
-            id_card: req.body.id_card,
-            tel: req.body.tel,
-            student_id: req.body.student_id,
-            user_firstname_th: req.body.user_firstname_th,
-            user_lastname_th: req.body.user_lastname_th
-            
-        });
-        console.log(data)
-        let Result = await checkPassword({ password: password, })
-        if (Result === true) {
-            res.status(200).send({ message: true });
+        let datauser = await knex.knex('user').where({ user_firstname: req.body.user_firstname, user_lastname: req.body.user_lastname }).select();
+        if (datauser.length == 0) {
+            let password = await hashPassword(req.body.password)
+            let data = await knex.knex('user').insert({
+                user_name: req.body.user_name,
+                password: password,
+                user_type: req.body.user_type,
+                user_firstname: req.body.user_firstname,
+                user_lastname: req.body.user_lastname,
+                user_year: parseInt(req.body.user_year || 0),
+                user_unit: parseInt(req.body.user_unit || 0),
+                id_card: req.body.id_card,
+                tel: req.body.tel,
+                student_id: req.body.student_id,
+                user_firstname_th: req.body.user_firstname_th,
+                user_lastname_th: req.body.user_lastname_th
+
+            });
+
+            let Result = await checkPassword({ password: password, })
+            if (Result === true) {
+                res.status(200).send({ message: true });
+            } else {
+                res.status(404).send({ message: false });
+            }
+
         } else {
-            res.status(404).send({ message: false });
+            res.status(200).send({ message: "Username และ Password มีอยู่ในระบบแล้ว" });
         }
 
         // res.json(data);
@@ -176,9 +182,15 @@ router.get('/get_universityAll', async function (req, res, next) {
 });
 router.post('/search_university', async function (req, res, next) {
     try {
-        const searchTerm = req.body.searchTerm;
+        // const searchTerm = req.body.searchTerm;
+        // let data = await knex.knex('university').select('*')
+        //     .where('sub_name', 'like', `%${req.body.searchTerm}%`)
+
         let data = await knex.knex('university').select('*')
-            .where('sub_name', 'like', `%${searchTerm}%`);
+            .where('sub_name', 'like', `%${req.body.searchTerm}%`)
+            .andWhere('university_year', 'like', `%${req.body.selectedYear}%`)
+            ;
+        console.log(data)
         res.json(data);
     } catch (error) {
         res.json(error);
@@ -186,7 +198,7 @@ router.post('/search_university', async function (req, res, next) {
 });
 router.post('/search_university_year', async function (req, res, next) {
     try {
-        const searchTerm = req.body.searchTerm;
+        const searchTerm = req.body.selectedYear;
         let data = await knex.knex('university').select('*')
             .where('university_year', 'like', `%${searchTerm}%`);
         res.json(data);
@@ -203,7 +215,7 @@ router.post('/add_university', async function (req, res, next) {
             explanation: req.body.explanation,
             group: req.body.group,
             unit: parseInt(req.body.unit),
-            university_year:req.body.university_year,
+            university_year: req.body.university_year,
 
         });
 
@@ -350,6 +362,7 @@ router.post('/add_subject', async function (req, res, next) {
             id_school: req.body.id_school,
             sub_name: req.body.sub_name,
             explanation: req.body.explanation,
+            unit: req.body.unit,
         });
         res.json(data);
     } catch (error) {
@@ -554,10 +567,10 @@ router.post('/add_teacher', async function (req, res, next) {
                     console.log(req.body[i].groupuniversitys[j].teacher)
                     let data = await knex.knex('course_grade').where({ id_course: req.body[i].groupuniversity[j].id_course }).update({
                         // teacher1:req.body[i].teacher1,teacher2: req.body[i].teacher2,teacher3: req.body[i].teacher3
-                        indextea:req.body[i].groupuniversitys[j].teacher
-                        
+                        indextea: req.body[i].groupuniversitys[j].teacher
+
                     });
-                   
+
                 }
             }
         }
@@ -571,6 +584,18 @@ router.post('/get_userall_teacher_user_year', async function (req, res, next) {
     try {
         console.log(req.body)
         let data = await knex.knex('user').where({ user_type: 'user', user_year: req.body.user_year }).select();
+        res.json(data);
+    } catch (error) {
+        res.json(error);
+    }
+});
+router.post('/get_userall_name', async function (req, res, next) {
+    try {
+        let data = await knex.knex('user').select('*')
+            .where('user_firstname', 'like', `%${req.body.searchTerm}%`)
+            .orWhere('user_firstname_th', 'like', `%${req.body.searchTerm}%`)
+            ;
+        // let data = await knex.knex('user').where({ user_firstname: req.body.user_firstname }).select();
         res.json(data);
     } catch (error) {
         res.json(error);
