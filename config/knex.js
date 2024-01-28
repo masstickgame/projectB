@@ -2,10 +2,10 @@ var knex = require('knex')({
     client: 'pg',
     connection: {
         host: '108.181.157.252',
-        port : 12830,
+        port : 12858,
         user: 'admin',
         password: '123456789',
-        database: 'postgres'
+        database: 'deeeead'
     }
 });
 
