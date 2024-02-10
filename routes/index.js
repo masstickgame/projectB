@@ -86,7 +86,9 @@ router.post('/add_user', async function (req, res, next) {
                 tel: req.body.tel,
                 student_id: req.body.student_id,
                 user_firstname_th: req.body.user_firstname_th,
-                user_lastname_th: req.body.user_lastname_th
+                user_lastname_th: req.body.user_lastname_th,
+                teacher_id: req.body.teacher_id,
+                teacher: req.body.teacher_name
 
             });
 
