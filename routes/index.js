@@ -190,11 +190,11 @@ router.post('/search_university', async function (req, res, next) {
 
         let data = await knex.knex('university').select('*')
             .where('sub_name', 'like', `%${req.body.searchTerm}%`)
-            .andWhere('university_year', 'like', `%${req.body.selectedYear}%`)
-            ;
+            .andWhere('university_year', 'like', `%${req.body.selectedYear}%`);
         console.log(data)
         res.json(data);
     } catch (error) {
+
         res.json(error);
     }
 });
@@ -208,6 +208,23 @@ router.post('/search_university_year', async function (req, res, next) {
         res.json(error);
     }
 });
+router.post('/search_branch', async function (req, res, next) {
+    try {
+        const searchTerm = req.body.selectebranch;
+        console.log(req.body)
+        let data = await knex.knex('university').where({ university_year: req.body.selectedYear, branch: req.body.selectebranch }).select('*');
+        // let data = await knex.knex('university').select('*')
+        //     .andWhere('branch', 'like', `%${req.body.searchTerm}%`)
+        //     .andWhere('university_year' = req.body.selectedYear)
+
+        res.json(data);
+        // console.log(searchTerm);
+    } catch (error) {
+        console.log(error)
+        res.json([]);
+    }
+});
+
 router.post('/add_university', async function (req, res, next) {
     try {
         console.log('checkdata')
@@ -218,7 +235,7 @@ router.post('/add_university', async function (req, res, next) {
             group: req.body.group,
             unit: parseInt(req.body.unit),
             university_year: req.body.university_year,
-
+            branch: req.body.branch,
         });
 
         res.json(data);
@@ -235,7 +252,7 @@ router.post('/update_university', async function (req, res, next) {
             sub_name: req.body.sub_name,
             explanation: req.body.explanation,
             university_year: req.body.university_year,
-
+            branch: req.body.branch,
         });
         res.json(data);
     } catch (error) {
@@ -260,10 +277,12 @@ router.get('/get_schoolAll', async function (req, res, next) {
 });
 router.post('/add_school', async function (req, res, next) {
     try {
+        console.log(req.body.branch)
         let data = await knex.knex('school').insert({
             names: req.body.names,
             year_school: req.body.year_school,
             type_school: req.body.type_school,
+            branch: req.body.branch,
         });
         res.json(data);
     } catch (error) {
@@ -276,6 +295,7 @@ router.post('/update_school', async function (req, res, next) {
             names: req.body.names,
             year_school: req.body.year_school,
             type_school: req.body.type_school,
+            branch: req.body.branch,
         });
         res.json(data);
     } catch (error) {
@@ -308,6 +328,30 @@ router.post('/search_date', async function (req, res, next) {
         res.json(data);
     } catch (error) {
         res.json(error);
+    }
+});
+router.post('/search_branch_Maps', async function (req, res, next) {
+    try {
+        const searchTerm = req.body.selectebranch;
+        console.log(req.body)
+        let data
+        if (req.body.selectebranch != undefined && req.body.selectedYear != undefined) {
+            data = await knex.knex('school').where({ year_school: req.body.selectedYear, branch: req.body.selectebranch }).select('*');
+        } else if (req.body.selectedYear != undefined){
+            data = await knex.knex('school').where({ year_school: req.body.selectedYear}).select('*');
+        }else if(req.body.selectebranch != undefined){
+            data = await knex.knex('school').where({ branch: req.body.selectebranch }).select('*');
+        }
+
+            // let data = await knex.knex('school').select('*')
+            //     .Where('branch', 'like', `%${searchTerm}%`)
+            //     .andWhere('university_year' = req.body.selectedYear)
+
+            res.json(data);
+        // console.log(searchTerm);
+    } catch (error) {
+        console.log(error)
+        res.json([]);
     }
 });
 router.post('/get_subjectbuid', async function (req, res, next) {
@@ -542,7 +586,16 @@ router.post('/addTransactionMachine', async function (req, res, next) {
         res.json(error);
     }
 });
-router.get('/get_userall_user', async function (req, res, next) {
+router.get('/get_branchall', async function (req, res, next) {
+    try {
+        let data = await knex.knex('branch').select();
+        // let data = await knex.knex('branch').where({ id : req.body.id }).select();
+        res.json(data);
+    } catch (error) {
+        res.json(error);
+    }
+});
+router.post('/get_userall_user', async function (req, res, next) {
     try {
         let data = await knex.knex('user').where({ user_type: 'user' }).select();
         res.json(data);
@@ -585,7 +638,7 @@ router.post('/add_teacher', async function (req, res, next) {
 router.post('/get_userall_teacher_user_year', async function (req, res, next) {
     try {
         console.log(req.body)
-        let data = await knex.knex('user').where({ user_type: 'user', user_year: req.body.user_year }).select();
+        let data = await knex.knex('user').where({ user_type: 'user', user_year: req.body.user_year, teacher_id: req.body.teacher_id }).select();
         res.json(data);
     } catch (error) {
         res.json(error);
